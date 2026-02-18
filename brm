@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Specification: Medical Device Regulations RAG Tool for BRM Extremities</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #ffffff, #e6f0ff); /* Clean white to light blue for medical trust */
+            color: #001f3f; /* Deep navy for text */
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #007bff, #004085); /* BRM blue gradient for innovation and reliability */
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+            border-bottom: 8px solid #003366; /* Darker blue border */
+            position: relative;
+            overflow: hidden;
+        }
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.15), transparent);
+            animation: shine 6s infinite ease-in-out;
+        }
+        @keyframes shine {
+            0% { transform: translate(0, 0); opacity: 0.5; }
+            50% { transform: translate(25%, 25%); opacity: 1; }
+            100% { transform: translate(0, 0); opacity: 0.5; }
+        }
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            text-shadow: 0 3px 6px rgba(0,0,0,0.25);
+        }
+        .header p {
+            font-size: 1.4rem;
+            opacity: 0.95;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .logo-link {
+            display: block;
+            margin: 1.5rem auto;
+            max-width: 250px;
+            transition: transform 0.3s;
+        }
+        .logo-link:hover {
+            transform: scale(1.05);
+        }
+        .logo-link img {
+            width: 100%;
+            height: auto;
+            filter: drop-shadow(0 6px 12px rgba(0,0,0,0.4));
+        }
+        .navbar {
+            background-color: #ffffff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .navbar-brand {
+            font-weight: 800;
+            color: #007bff;
+        }
+        .nav-link {
+            color: #001f3f;
+            font-weight: 600;
+            transition: color 0.3s, transform 0.3s;
+        }
+        .nav-link:hover {
+            color: #007bff;
+            transform: translateY(-2px);
+        }
+        .section {
+            padding: 4rem 0;
+            border-bottom: 1px solid #b3d1ff; /* Light blue border */
+            transition: background 0.3s;
+        }
+        .section:hover {
+            background: rgba(230, 240, 255, 0.6); /* Subtle blue hover */
+        }
+        .section h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #007bff;
+            margin-bottom: 2rem;
+            border-left: 8px solid #004085;
+            padding-left: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+        }
+        .subsection h3 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #004085;
+            margin-top: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0, 64, 133, 0.15); /* Blue shadow */
+            background: linear-gradient(135deg, #ffffff, #f0f8ff);
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin-bottom: 2.5rem;
+        }
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 64, 133, 0.25);
+        }
+        .card-body {
+            padding: 2.5rem;
+        }
+        table {
+            width: 100%;
+            margin-bottom: 2rem;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+        th, td {
+            padding: 1.4rem;
+            text-align: left;
+            border-bottom: 1px solid #b3d1ff;
+        }
+        th {
+            background: linear-gradient(135deg, #007bff, #004085);
+            color: white;
+            font-weight: 600;
+        }
+        .code-snippet {
+            background-color: #f0f8ff;
+            border-radius: 15px;
+            padding: 1.8rem;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 1.5rem 0;
+            box-shadow: inset 0 3px 6px rgba(0,0,0,0.05);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #007bff, #004085);
+            border: none;
+            border-radius: 50px;
+            padding: 0.85rem 2.5rem;
+            font-weight: 600;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .btn-primary:hover {
+            transform: scale(1.08);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            background: linear-gradient(135deg, #004085, #002d66);
+        }
+        .icon {
+            margin-right: 0.75rem;
+            color: #007bff;
+            transition: color 0.3s;
+        }
+        .icon:hover {
+            color: #004085;
+        }
+        footer {
+            background: linear-gradient(135deg, #007bff, #004085);
+            color: white;
+            text-align: center;
+            padding: 2.5rem;
+            margin-top: 4rem;
+            border-top: 8px solid #003366;
+        }
+        footer a {
+            color: #ffffff;
+            text-decoration: underline;
+            transition: color 0.3s;
+        }
+        footer a:hover {
+            color: #ffd700;
+        }
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            .section {
+                padding: 3rem 1.5rem;
+            }
+            .card-body {
+                padding: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="https://brm-extremities.com/" target="_blank">BRM Extremities</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#introduction">Introduction</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#problems">Problems</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#mvp">MVP Features</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#countries">Countries</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#tech">Tech Stack</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#theming">Theming</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#plan">Development Plan</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <header class="header">
+        <a href="https://brm-extremities.com/" target="_blank" class="logo-link">
+            <img src="https://brm-extremities.com/wp-content/uploads/2023/10/Logo-BRM-Extremities.png" alt="BRM Extremities Logo">
+        </a>
+        <h1>Project Specification: Custom RAG Tool for Medical Device Regulations</h1>
+        <p>For BRM Extremities (Italy) – Built by Choyon (@thechoyon) on Fiverr</p>
+        <p class="lead">Empowering global expansion with AI-driven compliance insights for orthopedic innovations. Inspired by <a href="https://github.com/harindermashiana/sec-10q-rag" target="_blank" style="color: #ffd700; text-decoration: underline;">harindermashiana/sec-10q-rag</a> GitHub repo.</p>
+    </header>
+
+    <div class="container">
+        <section class="section" id="introduction">
+            <h2><i class="fas fa-info-circle icon"></i> Introduction & Overview</h2>
+            <div class="card">
+                <div class="card-body">
+                    <p>Hi Choyon,</p>
+                    <p>I'm Helton from <a href="https://brm-extremities.com/" target="_blank">BRM Extremities</a>, an Italian manufacturer specializing in orthopedic medical devices like joint spacers and implants (Class IIa/IIb/III under EU MDR). We're expanding globally, but regulatory compliance is a bottleneck. Distributors in places like Ukraine over-request documents, raising suspicions, while novices in the US (e.g., Texas) need guidance on import processes.</p>
+                    <p>This tool adapts the <a href="https://github.com/harindermashiana/sec-10q-rag" target="_blank">sec-10q-rag</a> repo's RAG architecture (Retrieval-Augmented Generation) from SEC financial filings to medical device regulations. It will ingest official docs, enable semantic searches, and generate comparisons/checklists via LLM.</p>
+                    <p><strong>Why you?</strong> Your 5.0 rating (823 reviews) and expertise in Python automation, web scraping, Selenium, APIs (Flask/Django), data processing, and bots make you ideal. We'll solve real problems while building something scalable.</p>
+                    <p><strong>High-Level Benefits:</strong></p>
+                    <ul>
+                        <li>Save hours on manual research.</li>
+                        <li>Flag fraudulent over-requests (e.g., Ukraine).</li>
+                        <li>Generate ready-to-share guides (e.g., US imports).</li>
+                        <li>Scale to new markets with minimal updates.</li>
+                    </ul>
+                    <p>Let's make this perfect – detailed, actionable, and user-friendly!</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="problems">
+            <h2><i class="fas fa-exclamation-triangle icon"></i> Core Problems to Solve</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3>Scenario 1: Ukraine Distributor Suspicion</h3>
+                            <p>A distributor requests excessive docs for product registration. We suspect extras (e.g., unrelated financials). Tool must:</p>
+                            <ul>
+                                <li>Ingest MoH/SEC docs (Resolutions 753-755, HTA Order 1771 – new as of Nov 2025 for high-risk devices).</li>
+                                <li>Allow upload of requested list (text/CSV).</li>
+                                <li>Compare semantically: Flag extras/mismatches with explanations (e.g., "Financial audit not required per Res. 753").</li>
+                                <li>Query examples: "Is a bank statement mandatory for Class IIb implants?" or "Full list for orthopedic registration."</li>
+                            </ul>
+                            <p><strong>In-Depth Rationale:</strong> Ukraine aligns with EU but has local twists (e.g., AR mandatory, Ukrainian translations). 2026 updates include stricter HTA for implants – tool auto-detects changes.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3>Scenario 2: US (Texas) Novice Importer Guidance</h3>
+                            <p>New distributor lacks import experience. We have FDA 510(k), but need to split guidance: Their docs vs. ours per shipment. Tool must:</p>
+                            <ul>
+                                <li>Ingest FDA guides (21 CFR 801-820, QMSR effective Feb 2026 – ISO 13485 alignment).</li>
+                                <li>Generate role-based checklists (Importer: FEI reg, affirmations; Exporter: CFG cert, invoices).</li>
+                                <li>Customize: "For first-time import of Italian orthopedic devices."</li>
+                                <li>Export to PDF for sharing.</li>
+                            </ul>
+                            <p><strong>In-Depth Rationale:</strong> No Texas-specific rules (federal only), but CBP/FDA entry can delay shipments. QMSR 2026 mandates quality system audits – include notes on compliance evidence.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="mvp">
+            <h2><i class="fas fa-rocket icon"></i> MVP Goals & Features</h2>
+            <div class="card">
+                <div class="card-body">
+                    <p><strong>Scope:</strong> 15 priority countries (expandable). Focus on orthopedic/Class IIa+ devices. User queries in English/Portuguese.</p>
+                    <h3>Key Features (In-Depth)</h3>
+                    <ul>
+                        <li><strong>Natural Language Queries:</strong> Semantic search e.g., "Docs for Class IIb registration in China?" Outputs structured tables with sources.</li>
+                        <li><strong>Comparison Mode:</strong> Upload distributor list; LLM analyzes diffs (use cosine similarity on embeddings for accuracy). Flag levels: Required/Missing/Extra/Optional.</li>
+                        <li><strong>Checklist Generator:</strong> Role-split (Importer/Exporter/Manufacturer), customizable by device class/country. Include timelines/costs where available.</li>
+                        <li><strong>Translation & Updates:</strong> Auto-translate (googletrans/DeepL); monthly cron scrape for changes (diff old/new versions, notify via email).</li>
+                        <li><strong>Disclaimers & Logging:</strong> Every output: "Not legal advice." Log queries for auditing.</li>
+                        <li><strong>Extensibility:</strong> Admin dashboard to upload new docs/countries; modular config (YAML for sources).</li>
+                    </ul>
+                    <p><strong>Example User Flow:</strong> Login → Select country → Query or upload list → View table/checklist → Export PDF.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="countries">
+            <h2><i class="fas fa-globe icon"></i> Prioritized Countries & Sources</h2>
+            <div class="card">
+                <div class="card-body">
+                    <p>Selected based on global medtech markets (WHO/ICMRA data). Ingest 5-15 key docs per country (PDFs/guides/laws). Automate scraping for updates.</p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Country</th>
+                                <th>Authority</th>
+                                <th>Key Sites/Docs</th>
+                                <th>2026 Notes & In-Depth Focus</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>US</td>
+                                <td>FDA</td>
+                                <td><a href="https://www.fda.gov/medical-devices" target="_blank">fda.gov/medical-devices</a> (imports guides, 21 CFR 801-820, QMSR)</td>
+                                <td>QMSR (Feb 2026): ISO 13485 integration; focus on import affirmations, U.S. Agent, batch traceability for implants.</td>
+                            </tr>
+                            <tr>
+                                <td>Ukraine</td>
+                                <td>MoH/SEC</td>
+                                <td><a href="https://moz.gov.ua/" target="_blank">moz.gov.ua</a>, <a href="https://dls.gov.ua/" target="_blank">dls.gov.ua</a> (Res. 753-755, HTA Order 1771)</td>
+                                <td>HTA for first-in-category IIb/III; AR & Ukrainian translations mandatory; compare for over-requests like financials.</td>
+                            </tr>
+                            <tr>
+                                <td>EU</td>
+                                <td>EMA/National</td>
+                                <td><a href="https://ema.europa.eu/" target="_blank">ema.europa.eu</a>, <a href="https://salute.gov.it/" target="_blank">salute.gov.it</a> (MDR 2017/745)</td>
+                                <td>Harmonized; EUDAMED database integration; post-market surveillance emphasis.</td>
+                            </tr>
+                            <tr>
+                                <td>UK</td>
+                                <td>MHRA</td>
+                                <td><a href="https://www.gov.uk/government/organisations/medicines-and-healthcare-products-regulatory-agency" target="_blank">gov.uk/mhra</a> (UKCA)</td>
+                                <td>Post-Brexit: UK Responsible Person; align with MDR but separate certs.</td>
+                            </tr>
+                            <tr>
+                                <td>Canada</td>
+                                <td>Health Canada</td>
+                                <td><a href="https://www.canada.ca/en/health-canada.html" target="_blank">canada.ca/health-canada</a> (SOR/98-282)</td>
+                                <td>MDEL licensing; CMDR conformity; bilingual labeling.</td>
+                            </tr>
+                            <tr>
+                                <td>Australia</td>
+                                <td>TGA</td>
+                                <td><a href="https://www.tga.gov.au/" target="_blank">tga.gov.au</a> (ARTG)</td>
+                                <td>Sponsor reqs; essential principles checklist; mutual recog with EU.</td>
+                            </tr>
+                            <tr>
+                                <td>Japan</td>
+                                <td>PMDA</td>
+                                <td><a href="https://www.pmda.go.jp/english/" target="_blank">pmda.go.jp</a> (PMD Act)</td>
+                                <td>QMS ordinance; foreign manufacturer accreditation; clinical data for implants.</td>
+                            </tr>
+                            <tr>
+                                <td>China</td>
+                                <td>NMPA</td>
+                                <td><a href="https://english.nmpa.gov.cn/" target="_blank">english.nmpa.gov.cn</a> (Order 739)</td>
+                                <td>Clinical eval; type testing; local agent for imports.</td>
+                            </tr>
+                            <tr>
+                                <td>Brazil</td>
+                                <td>ANVISA</td>
+                                <td><a href="https://www.gov.br/anvisa/pt-br" target="_blank">gov.br/anvisa</a> (RDC 751/2022)</td>
+                                <td>AFE licensing; GMP cert (INMETRO); Portuguese docs.</td>
+                            </tr>
+                            <tr>
+                                <td>India</td>
+                                <td>CDSCO</td>
+                                <td><a href="https://cdsco.gov.in/opencms/opencms/en/Home/" target="_blank">cdsco.gov.in</a> (MD Rules 2017)</td>
+                                <td>Form MD-15 import license; risk-based classification.</td>
+                            </tr>
+                            <tr>
+                                <td>Switzerland</td>
+                                <td>Swissmedic</td>
+                                <td><a href="https://www.swissmedic.ch/swissmedic/en/home.html" target="_blank">swissmedic.ch</a> (MedDO)</td>
+                                <td>EU mutual recog; CHRN unique ID for devices.</td>
+                            </tr>
+                            <tr>
+                                <td>Mexico</td>
+                                <td>COFEPRIS</td>
+                                <td><a href="https://www.gob.mx/cofepris" target="_blank">gob.mx/cofepris</a></td>
+                                <td>Import permits; NOM standards; Spanish translations.</td>
+                            </tr>
+                            <tr>
+                                <td>South Korea</td>
+                                <td>MFDS</td>
+                                <td><a href="https://www.mfds.go.kr/eng/index.do" target="_blank">mfds.go.kr/eng</a> (KGMP)</td>
+                                <td>Import notification; technical file review.</td>
+                            </tr>
+                            <tr>
+                                <td>Russia</td>
+                                <td>Roszdravnadzor</td>
+                                <td><a href="https://roszdravnadzor.gov.ru/" target="_blank">roszdravnadzor.gov.ru</a></td>
+                                <td>GOST standards; EAEU registration; Russian labeling.</td>
+                            </tr>
+                            <tr>
+                                <td>Saudi Arabia</td>
+                                <td>SFDA</td>
+                                <td><a href="https://www.sfda.gov.sa/en" target="_blank">sfda.gov.sa</a> (MDMA)</td>
+                                <td>Conformity assessment; MDNR registration; Arabic instructions.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="tech">
+            <h2><i class="fas fa-code icon"></i> Tech Stack & Architecture</h2>
+            <div class="card">
+                <div class="card-body">
+                    <p><strong>Base:</strong> Fork <a href="https://github.com/harindermashiana/sec-10q-rag" target="_blank">sec-10q-rag</a> – modular Python package with ingestion, embedding, and querying.</p>
+                    <h3>Components (In-Depth)</h3>
+                    <ul>
+                        <li><strong>Language:</strong> Python 3.9+ (use venv for isolation).</li>
+                        <li><strong>Ingestion:</strong> Requests/BeautifulSoup/Selenium for scraping (handle anti-bot with headers/rotating proxies). PyMuPDF/langchain for PDF/HTML parsing (extract sections via regex/heuristics, e.g., "Article X: Requirements").</li>
+                        <li><strong>Processing:</strong> Chunk to 500-1000 tokens; translate non-English (googletrans free; fallback DeepL if API key provided). Clean noise (headers/footers).</li>
+                        <li><strong>Embeddings/Search:</strong> SentenceTransformers (all-MiniLM-L6-v2 for multilingual); FAISS index (hybrid dense/sparse for precision). Tag by country/section/device class.</li>
+                        <li><strong>LLM:</strong> OpenAI GPT-4o-mini (provide key securely); custom prompts for comparisons (e.g., "Analyze [context] vs [user_list]: Output JSON {required: [], extras: []}"). Fallback local (HuggingFace Llama-3 via transformers).</li>
+                        <li><strong>Storage:</strong> SQLite (metadata: doc URLs, versions, tags); local JSON/FAISS for embeddings (persistent across runs).</li>
+                        <li><strong>Interface:</strong> Flask web app (Bootstrap for UI); routes: /query, /compare, /checklist. File upload (Werkzeug); PDF export (ReportLab or WeasyPrint).</li>
+                        <li><strong>Other:</strong> Logging (logging lib); error handling (e.g., retry failed scrapes); security (sanitize inputs, API key env vars).</li>
+                    </ul>
+                    <h3>Sample Code Snippet: Basic Query Prompt</h3>
+                    <pre class="code-snippet">
+prompt = f"""
+Based on the following regulatory context for {country}:
+{context_chunks}
+Answer the query: {user_query}
+Output in markdown table format with columns: Document, Requirement, Details, Source.
+Include disclaimer.
+"""
+response = openai.ChatCompletion.create(model="gpt-4o-mini", messages=[{"role": "user", "content": prompt}])
+                    </pre>
+                    <h3>Architecture Diagram (Text-Based)</h3>
+                    <pre class="code-snippet">
+User Query/UI → Query Engine (Filter by Country) → FAISS Retrieval (Top-K Chunks) → LLM Prompt Builder → OpenAI Response → Output Formatter (Table/PDF)
+Parallel: Scraper Cron → Parser → Embedder → Update Index
+                    </pre>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="theming">
+            <h2><i class="fas fa-palette icon"></i> Theming Instructions for UI/UX</h2>
+            <div class="card">
+                <div class="card-body">
+                    <p>To ensure the tool aligns with BRM Extremities' branding, theme the entire UI/UX to match our corporate identity. This creates a seamless, professional experience that reflects our focus on innovation in orthopedic medical devices.</p>
+                    <h3>Key Branding Elements</h3>
+                    <ul>
+                        <li><strong>Color Scheme:</strong> Primary: #007bff (vibrant blue for trust and health); Secondary: #004085 (deep navy for depth); Accents: #ffffff (white for cleanliness), #e6f0ff (light blue for backgrounds); Gradients: Use linear-gradient(135deg, #007bff, #004085) for headers/buttons.</li>
+                        <li><strong>Fonts:</strong> Main: 'Montserrat' (sans-serif, weights 400/600/800 for modern, readable look); Code/Technical: 'Courier New' or monospace. Import via Google Fonts.</li>
+                        <li><strong>Logo Integration:</strong> Include our logo (URL: <a href="https://brm-extremities.com/wp-content/uploads/2023/10/Logo-BRM-Extremities.png" target="_blank">Logo</a>) in the header/navigation. Make it clickable to our site. Use drop-shadow for elevation.</li>
+                        <li><strong>Layout & Style:</strong> Clean, minimalistic medical theme – white/light blue backgrounds, rounded corners (15-20px radius), subtle shadows (e.g., box-shadow: 0 10px 20px rgba(0, 64, 133, 0.15)). Buttons: Gradient blue, rounded (50px), hover effects (scale 1.08, shadow). Tables: Blue headers, light borders (#b3d1ff).</li>
+                        <li><strong>Icons & Animations:</strong> Use Font Awesome icons in blue (#007bff). Subtle animations: Shine effect on header, hover translates/lifts on cards/links.</li>
+                        <li><strong>Responsive Design:</strong> Mobile-first with Bootstrap; ensure clean stacking on small screens.</li>
+                        <li><strong>Additional Notes:</strong> Match our website's style (<a href="https://brm-extremities.com/" target="_blank">brm-extremities.com</a>) – professional, trustworthy, with blue accents for Italian excellence in medtech. Add footer with copyright and link to our site.</li>
+                    </ul>
+                    <p><strong>Implementation:</strong> Use Bootstrap 5+ for base, override with custom CSS. Test on desktop/mobile. This spec page itself is themed as an example – replicate similar styles in the tool's Flask app.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="plan">
+            <h2><i class="fas fa-calendar-check icon"></i> Development Plan & Milestones</h2>
+            <div class="card">
+                <div class="card-body">
+                    <p><strong>Timeline:</strong> 2-4 weeks (20-40 hours/week). Use GitHub for version control (private repo, invite me).</p>
+                    <ol>
+                        <li><strong>Week 1: Core Setup & Prototypes</strong> – Fork repo; ingestion for US/Ukraine (scrape/parse/embed 10+ docs). Basic CLI query; test Ukraine comparison.</li>
+                        <li><strong>Week 2: Features & Expansion</strong> – Add checklist gen, translations; ingest remaining countries. Build Flask UI with uploads/exports.</li>
+                        <li><strong>Week 3: Polish & Testing</strong> – Cron updates, disclaimers; unit/integration tests (pytest for parsing/search). Edge cases: Bad uploads, no matches. Apply BRM theming.</li>
+                        <li><strong>Week 4 (Optional):</strong> Optimizations (e.g., reranking with cross-encoder); deployment (Docker compose; guide for local/VPS like DigitalOcean).</li>
+                    </ol>
+                    <p><strong>Deliverables:</strong> Full repo, demo video (Loom), user manual PDF, setup instructions (README.md).</p>
+                    <p><strong>Testing Strategy:</strong> Provide sample data (e.g., mock Ukraine list); I'll validate with real scenarios. Aim for 95% query accuracy.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="next-steps">
+            <h2><i class="fas fa-forward icon"></i> Next Steps</h2>
+            <div class="card">
+                <div class="card-body">
+                    <p><strong>Timeline:</strong> Start ASAP; weekly updates via Fiverr/Email.</p>
+                    <p><strong>Questions?</strong> Let's discuss – schedule a call if needed.</p>
+                    <a href="https://www.fiverr.com/thechoyon" class="btn btn-primary" target="_blank">Contact on Fiverr</a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 <a href="https://brm-extremities.com/" target="_blank">BRM Extremities</a> – Prepared for Choyon by Helton. All rights reserved.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>
